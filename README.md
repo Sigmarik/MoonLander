@@ -1,6 +1,6 @@
 # Yet Another Moon Lander Clone
 
-*But this time with DMA rendering!*
+*But this time with CPU rendering!*
 
 ![screenshot](screenshot.png)
 
