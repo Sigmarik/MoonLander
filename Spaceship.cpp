@@ -90,13 +90,20 @@ void Spaceship::drawBody(Screen &screen) {
 }
 
 void Spaceship::drawArrows(Screen &screen) {
-  IntColor velocity_color = IntColor(0, 0, 130);
+  IntColor velocity_color = IntColor(0, 0, 255);
   IntColor planet_direction_color = IntColor(70, 0, 0);
+  IntColor direction_color = IntColor(0, 70, 0);
 
   screen.drawLine(Line(position_, position_ + velocity_), velocity_color);
 
-  screen.drawLine(Line(position_, position_ - position_.normalized() * 0.2),
-                  planet_direction_color);
+  // float compass_arrow_length = std::max(0.3, sqrt(position_.length())
+  // - 10.0);
+  screen.drawLine(Line(position_, position_ - position_.normalized() * 0.3),
+                  planet_direction_color, Screen::DrawFlags::IGNORE_SCALE);
+
+  screen.drawLine(
+      Line(position_, position_ + Vec2f::fromAzimuth(rotation_, 0.3)),
+      direction_color, Screen::DrawFlags::IGNORE_SCALE);
 }
 
 void Spaceship::processCollision(const HitResult &hit, float delta_time) {
