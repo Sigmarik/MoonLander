@@ -39,6 +39,9 @@ private:
 
   float maneuverability_ = 5;
 
-  unsigned flame_flicker_stage_ = 0;
+  float time_since_hit_ = 1e10;
+  float toughness_ = 0.1;
+
+  unsigned flickering_stage_ = 0;
   bool is_accelerating_ = false;
 };

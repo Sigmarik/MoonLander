@@ -9,6 +9,8 @@ void Spaceship::update(const Planet &planet, float delta_time) {
   //* For now, though, I will have to suffice myself with the old fashion way:
   //* explicit component references.
 
+  time_since_hit_ += delta_time;
+
   Vec2f gravity = planet.gravity(position_);
 
   position_ += velocity_ * delta_time;
@@ -59,6 +61,9 @@ void Spaceship::drawShield(Screen &screen) {
 
 void Spaceship::drawBody(Screen &screen) {
   static const IntColor BODY_COLOR(0, 255, 0);
+  static const IntColor DAMAGED_BODY_COLOR(255, 0, 0);
+
+  static const float CRASH_FLICKERING_DURATION = 1.0;
 
   Vec2f nose = Vec2f::fromAzimuth(rotation_, radius_) + position_;
   Vec2f left_wing =
@@ -69,9 +74,14 @@ void Spaceship::drawBody(Screen &screen) {
   Vec2f back =
       Vec2f::fromAzimuth(rotation_ + M_PI, radius_ * 2 / 3) + position_;
 
-  screen.drawLine(Line(nose, left_wing), BODY_COLOR);
-  screen.drawLine(Line(nose, right_wing), BODY_COLOR);
-  screen.drawLine(Line(right_wing, left_wing), BODY_COLOR);
+  IntColor body_color =
+      time_since_hit_ > CRASH_FLICKERING_DURATION || flickering_stage_ % 2 == 1
+          ? BODY_COLOR
+          : DAMAGED_BODY_COLOR;
+
+  screen.drawLine(Line(nose, left_wing), body_color);
+  screen.drawLine(Line(nose, right_wing), body_color);
+  screen.drawLine(Line(right_wing, left_wing), body_color);
 
   if (is_accelerating_) {
     static const IntColor FLAME_COLORS[] = {
@@ -81,12 +91,12 @@ void Spaceship::drawBody(Screen &screen) {
     unsigned stage_count = sizeof(FLAME_COLORS) / sizeof(*FLAME_COLORS);
 
     screen.drawLine(Line(right_wing, back),
-                    FLAME_COLORS[flame_flicker_stage_ % stage_count]);
+                    FLAME_COLORS[flickering_stage_ % stage_count]);
     screen.drawLine(Line(left_wing, back),
-                    FLAME_COLORS[flame_flicker_stage_ % stage_count]);
-
-    flame_flicker_stage_++;
+                    FLAME_COLORS[flickering_stage_ % stage_count]);
   }
+
+  flickering_stage_++;
 }
 
 void Spaceship::drawArrows(Screen &screen) {
@@ -113,6 +123,10 @@ void Spaceship::processCollision(const HitResult &hit, float delta_time) {
     Vec2f vertical =
         hit.delta * (dot(hit.delta, velocity_) / hit.delta.length2());
     Vec2f horizontal = velocity_ - vertical;
+
+    if (vertical.length2() > toughness_ * toughness_) {
+      time_since_hit_ = 0.0;
+    }
 
     vertical = -vertical * bounciness_;
 
