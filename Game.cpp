@@ -36,6 +36,9 @@ void initialize() {
       Spaceship(Vec2f(0.0, Game::planet.heightAtPoint(Vec2f(0, 1)) + 1.0));
 }
 
+static const float MIN_ZOOM = 1e-4;
+static const float ZOOM_CHANGE_SPEED = 0.5;
+
 static void updateZoom(float dt) {
   float zoom_change = 0.0;
 
@@ -48,7 +51,8 @@ static void updateZoom(float dt) {
   }
 
   Game::screen.setScale(std::max(
-      Game::screen.getScale() * (1.0 + zoom_change * 0.5 * dt), 0.0001));
+      Game::screen.getScale() * (1.0f + zoom_change * ZOOM_CHANGE_SPEED * dt),
+      MIN_ZOOM));
 }
 
 void act(float dt) {
