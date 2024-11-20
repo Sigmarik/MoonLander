@@ -38,7 +38,12 @@ void Spaceship::update(const Planet &planet, float delta_time) {
 }
 
 void Spaceship::draw(Screen &screen) {
-  IntColor body_color(0, 255, 0);
+  drawArrows(screen);
+  drawShield(screen);
+  drawBody(screen);
+}
+
+void Spaceship::drawShield(Screen &screen) {
   IntColor shield_color(60, 60, 70);
 
   unsigned shield_detail = 16;
@@ -50,6 +55,10 @@ void Spaceship::draw(Screen &screen) {
 
     screen.drawLine(Line(start + position_, end + position_), shield_color);
   }
+}
+
+void Spaceship::drawBody(Screen &screen) {
+  IntColor body_color(0, 255, 0);
 
   Vec2f nose = Vec2f::fromAzimuth(rotation_, radius_) + position_;
   Vec2f left_wing =
@@ -78,6 +87,16 @@ void Spaceship::draw(Screen &screen) {
 
     flame_flicker_stage_++;
   }
+}
+
+void Spaceship::drawArrows(Screen &screen) {
+  IntColor velocity_color = IntColor(0, 0, 130);
+  IntColor planet_direction_color = IntColor(70, 0, 0);
+
+  screen.drawLine(Line(position_, position_ + velocity_), velocity_color);
+
+  screen.drawLine(Line(position_, position_ - position_.normalized() * 0.2),
+                  planet_direction_color);
 }
 
 void Spaceship::processCollision(const HitResult &hit, float delta_time) {

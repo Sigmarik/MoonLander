@@ -36,11 +36,28 @@ void initialize() {
       Spaceship(Vec2f(0.0, Game::planet.heightAtPoint(Vec2f(0, 1)) + 1.0));
 }
 
+static void updateZoom(float dt) {
+  float zoom_change = 0.0;
+
+  if (is_key_pressed(VK_UP)) {
+    zoom_change += 1;
+  }
+
+  if (is_key_pressed(VK_DOWN)) {
+    zoom_change -= 1;
+  }
+
+  Game::screen.setScale(std::max(
+      Game::screen.getScale() * (1.0 + zoom_change * 0.5 * dt), 0.0001));
+}
+
 void act(float dt) {
   Game::time += dt;
 
   Game::spaceship.update(Game::planet, dt);
   Game::screen.setShift(Game::spaceship.getPosition());
+
+  updateZoom(dt);
 
   if (is_key_pressed(VK_ESCAPE))
     schedule_quit_game();

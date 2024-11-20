@@ -29,6 +29,8 @@ struct Screen {
 
   bool setAt(long long x, long long y, IntColor color = IntColor());
 
+  float getScale() const { return scale_; }
+
   void setShift(const Vec2f &shift) { shift_ = shift; }
   void setScale(float scale) { scale_ = scale; }
 

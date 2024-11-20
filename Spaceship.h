@@ -16,6 +16,10 @@ struct Spaceship {
   void draw(Screen &screen);
 
 private:
+  void drawShield(Screen &screen);
+  void drawBody(Screen &screen);
+  void drawArrows(Screen &screen);
+
   void processCollision(const HitResult &hit, float delta_time);
   void updateRotation(float delta_time);
 
