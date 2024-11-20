@@ -44,21 +44,21 @@ void Spaceship::draw(Screen &screen) {
 }
 
 void Spaceship::drawShield(Screen &screen) {
-  IntColor shield_color(60, 60, 70);
+  static const IntColor SHIELD_COLOR(60, 60, 70);
 
-  unsigned shield_detail = 16;
-  for (unsigned id = 0; id < shield_detail; ++id) {
+  const unsigned SHIELD_COMPLEXITY = 16;
+  for (unsigned id = 0; id < SHIELD_COMPLEXITY; ++id) {
     Vec2f start =
-        Vec2f::fromAzimuth((float)id / shield_detail * 2 * M_PI, radius_);
-    Vec2f end =
-        Vec2f::fromAzimuth((float)(id + 1) / shield_detail * 2 * M_PI, radius_);
+        Vec2f::fromAzimuth((float)id / SHIELD_COMPLEXITY * 2 * M_PI, radius_);
+    Vec2f end = Vec2f::fromAzimuth(
+        (float)(id + 1) / SHIELD_COMPLEXITY * 2 * M_PI, radius_);
 
-    screen.drawLine(Line(start + position_, end + position_), shield_color);
+    screen.drawLine(Line(start + position_, end + position_), SHIELD_COLOR);
   }
 }
 
 void Spaceship::drawBody(Screen &screen) {
-  IntColor body_color(0, 255, 0);
+  static const IntColor BODY_COLOR(0, 255, 0);
 
   Vec2f nose = Vec2f::fromAzimuth(rotation_, radius_) + position_;
   Vec2f left_wing =
@@ -69,21 +69,21 @@ void Spaceship::drawBody(Screen &screen) {
   Vec2f back =
       Vec2f::fromAzimuth(rotation_ + M_PI, radius_ * 2 / 3) + position_;
 
-  screen.drawLine(Line(nose, left_wing), body_color);
-  screen.drawLine(Line(nose, right_wing), body_color);
-  screen.drawLine(Line(right_wing, left_wing), body_color);
+  screen.drawLine(Line(nose, left_wing), BODY_COLOR);
+  screen.drawLine(Line(nose, right_wing), BODY_COLOR);
+  screen.drawLine(Line(right_wing, left_wing), BODY_COLOR);
 
   if (is_accelerating_) {
-    IntColor flame_colors[] = {
+    static const IntColor FLAME_COLORS[] = {
         IntColor(255, 10, 10),
         IntColor(255, 255, 10),
     };
-    unsigned stage_count = sizeof(flame_colors) / sizeof(*flame_colors);
+    unsigned stage_count = sizeof(FLAME_COLORS) / sizeof(*FLAME_COLORS);
 
     screen.drawLine(Line(right_wing, back),
-                    flame_colors[flame_flicker_stage_ % stage_count]);
+                    FLAME_COLORS[flame_flicker_stage_ % stage_count]);
     screen.drawLine(Line(left_wing, back),
-                    flame_colors[flame_flicker_stage_ % stage_count]);
+                    FLAME_COLORS[flame_flicker_stage_ % stage_count]);
 
     flame_flicker_stage_++;
   }
