@@ -14,5 +14,4 @@
 
 - The ship is now indestructible... But with complete* physics simulation!
 (*\* Rotation is not simulated for gameplay's sake*)
-- The flat surface was replaced with a nice, round and **orbitable** planetoid.
-- Frustum culling with fragment reduction & sector-optimized physics.
+- The flat surface of the planet was replaced with a nice, round and **orbitable** planetoid.
